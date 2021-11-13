@@ -1,7 +1,8 @@
 import java.util.Random;
 import java.util.concurrent.Flow.Subscription;
 
-	class summation extends Thread {
+	@SuppressWarnings("unused")
+	class summation<Summation> extends Thread {
 		
 		private int [] arr;
 		
@@ -60,19 +61,20 @@ import java.util.concurrent.Flow.Subscription;
 			
 		}
 		
-		public static  int parallelSum(int [] arr, int threads)
+		@SuppressWarnings({ "rawtypes", "null" })
+		public static  <Summation> int parallelSum(int [] arr, int threads)
 		
 		{
 			
 			int size = (int) Math.ceil(arr.length * 1.0/threads);
 			
-			Summation [] sums = new Summation [threads];
+			Summation [] sums = null;
 			
 			for (int i=0; i<threads ;i++) {
 				
-				sums[i] = new Summation(arr, i* size , (i + 1)* size );
+				sum (arr, i* size , (i + 1)* size );
 				
-				 sums [i].start();
+				 ((Thread) sums [i]).start();
 				
 			}
 			
@@ -81,18 +83,19 @@ import java.util.concurrent.Flow.Subscription;
 				for (Summation sum : sums ) 
 				
 					
-					sum .join ();
-				}
+					((Thread) sum) .join ();
+				
 				
 				
 			
-		}catch(InterruptedException e) {}
+		}
+			catch(InterruptedException e) {}
 			
 			int total = 0;
 			
 			for (Summation  sum : sums) {
 				
-				total += sum.getPartialSum ();
+				total += ((summation) sum).getPartialSum ();
 				
 			}
 			
@@ -117,7 +120,7 @@ import java.util.concurrent.Flow.Subscription;
 			
 			long start = System.currentTimeMillis();
 			
-			System.out.println(summation.sum(arr));
+			System.out.println(summation.sum(arr, 0, 0));
 			
 			System.out.println ("Single:" + (System.currentTimeMillis()- start));
 			
